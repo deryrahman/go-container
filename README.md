@@ -23,9 +23,15 @@ There're 3 basic minimal things to achive this:
 - Cgroups: limiting the resources for the existing process
 
 Important syscalls to create the process for initialization of the container:
-- `fork()`: creating a copy of process from current one 
+- `fork()`: creating a copy of process from current one
 - `exec()`: replacing the process's program with new program
+
+Namespaces we use for this exercise:
+- `CLONE_NEWPID`: to create new process id on the forked process
+- `CLONE_NEWUTS`: to change the hostname
+- `CLONE_NEWUSER`: to create new user which can be acted as root(?)
 
 ## Reference
 https://www.youtube.com/watch?v=8fi7uSYlOdc
 https://github.com/nathanagez/c_container/blob/master/container/src/main.c
+https://www.toptal.com/linux/separation-anxiety-isolating-your-system-with-linux-namespaces
