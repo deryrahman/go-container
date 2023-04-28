@@ -3,7 +3,7 @@
 Simple container implementation in Go.
 
 ## Motivation
-Knowing how container is built would make us easier to understand for debugging purpose whenever we encountered container related issues. As we see many, containers are defacto for shipping the services on heterogenous complex system.
+As we see many, containers are defacto for shipping the services on heterogenous complex system. Understand the flow of container creation would definitely help us to understand what happen under the hood. So, debugging on any container related issue would be easier.
 
 ## Goals
 We will mimicking the docker command for creating the container:
@@ -15,10 +15,10 @@ Omitting the `<image_name>` to simplify the process, the final command we have i
 `go-container run <command> <args>`
 
 ## Basic
-Container is just a process which live in some restriction so that it can operate similar like an OS on top of its parent.
+Container is just a process which live in some restriction. The capability of container is somewhat similar with what OS can do but without provisioning entire machine virtually.
 
-There're 3 things to achive this:
-- Namespaces: what things that the current process can see
+There're 3 basic minimal things to achive this:
+- Namespaces: what things the current process can see
 - Chroot: operation to change the root folder for existing process
 - Cgroups: limiting the resources for the existing process
 
