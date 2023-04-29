@@ -32,7 +32,7 @@ Namespaces we use for this exercise:
 - `CLONE_NEWPID`: to create new process id on the forked process
 - `CLONE_NEWUTS`: to change the hostname
 - `CLONE_NEWUSER`: to create new user which can be acted as root(?)
-- `CLONE_NEWNS`: 
+- `CLONE_NEWNS`:
 
 ## Reference
 https://www.youtube.com/watch?v=8fi7uSYlOdc
