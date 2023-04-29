@@ -6,6 +6,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strconv"
 	"syscall"
 )
 
@@ -44,6 +46,8 @@ func runCommand() {
 	})
 	must(err)
 	fmt.Println("Child Process:", childPid)
+	cg(childPid) // prepare the cgroup for memory allocation and max process
+
 	syscall.Wait4(childPid, nil, 0, nil) // wait for the termination of the container
 }
 
@@ -59,6 +63,14 @@ func childExec() {
 	// exec the forked process with entrypoint
 	must(syscall.Exec(os.Args[2], os.Args[2:], nil))
 	must(syscall.Unmount("proc", 0))
+}
+
+func cg(pid int) {
+	cgname := "demo"
+	pids := "/sys/fs/cgroup/pids/" + cgname
+	memory := "/sys/fs/cgroup/memory/" + cgname
+	must(os.WriteFile(filepath.Join(pids, "cgroup.procs"), []byte(strconv.Itoa(pid)), 0666))
+	must(os.WriteFile(filepath.Join(memory, "cgroup.procs"), []byte(strconv.Itoa(pid)), 0666))
 }
 
 func must(err error) {
