@@ -9,7 +9,7 @@ import (
 	"syscall"
 )
 
-// go main.go run /bin/bash <args>
+// go main.go run /bin/sh <args>
 func main() {
 	fmt.Println("Current Process:", os.Getpid())
 	switch os.Args[1] {
@@ -34,10 +34,10 @@ func runCommand() {
 			os.Stderr.Fd(),
 		},
 		Sys: &syscall.SysProcAttr{
-			Cloneflags: syscall.CLONE_NEWPID | syscall.CLONE_NEWUSER | syscall.CLONE_NEWUTS,
+			Cloneflags: syscall.CLONE_NEWPID | syscall.CLONE_NEWUTS | syscall.CLONE_NEWUSER | syscall.CLONE_NEWNS,
 			UidMappings: []syscall.SysProcIDMap{{
 				ContainerID: 0,
-				HostID:      1000,
+				HostID:      os.Getuid(),
 				Size:        1,
 			}},
 		},
@@ -48,10 +48,17 @@ func runCommand() {
 }
 
 func childExec() {
-	// exec the forked process with entrypoint
 	fmt.Println("Running", os.Args[2:])
+
+	// setup all things between fork and exec
 	must(syscall.Sethostname([]byte("container")))
+	must(syscall.Chroot("./alpine-fs"))
+	must(os.Chdir("/"))
+	must(syscall.Mount("proc", "proc", "proc", 0, ""))
+
+	// exec the forked process with entrypoint
 	must(syscall.Exec(os.Args[2], os.Args[2:], nil))
+	must(syscall.Unmount("proc", 0))
 }
 
 func must(err error) {

@@ -14,6 +14,8 @@ Omitting the `<image_name>` to simplify the process, the final command we have i
 
 `go-container run <command> <args>`
 
+For this exercise I use alpine mini root file system as an image, download [here](https://www.alpinelinux.org/downloads/) and extract to folder alpine-fs
+
 ## Basic
 Container is just a process which live in some restriction. The capability of container is somewhat similar with what OS can do but without provisioning entire machine virtually.
 
@@ -30,6 +32,7 @@ Namespaces we use for this exercise:
 - `CLONE_NEWPID`: to create new process id on the forked process
 - `CLONE_NEWUTS`: to change the hostname
 - `CLONE_NEWUSER`: to create new user which can be acted as root(?)
+- `CLONE_NEWNS`: 
 
 ## Reference
 https://www.youtube.com/watch?v=8fi7uSYlOdc
