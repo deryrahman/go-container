@@ -49,19 +49,21 @@ Namespaces we use for this exercise:
 
 2 directories, 4 files
 ```
-4. 
+4. Run this command to prepare the cgroups and run the container
 ```sh
 sudo ./cgroup.sh # to initialize the cgroup
 go run main.go run /bin/sh # run the container with /bin/sh as an entrypoint command
 ```
 
 **To test out the cgroup is working**
+
 Run command to create process > 10
 ```sh
 for i in `seq 1 100`
 do
   sleep 600 &
 done
+# run `ps fax` to see the process. the count of sleep processes should be no more than 10
 ```
 Run command to store memory > 50mb (TBD)
 ```sh
@@ -81,13 +83,14 @@ Run command to store memory > 50mb (TBD)
 ```
 
 - forking the process, bring the current file descriptor for stdin, stdout, stderr on the child process, and set the clone flags to setup the namespaces
-- before executing the entrypoint `<command>`, some syscall operation should be happen (we can call this stage as init)
-<TBD>
+- in the forking stage, we also map the child process user id between parent namespace and child namespace. So child process will be acted as a root in child namespace, but rootless in parent namespace
+- we also set the cgroup for the child process by adding the child process id (in the scope of parent namespace) to `cgroup.procs`
+- before executing the entrypoint `<command>`, some syscall operation should be happen (we can call this stage as init). In this case, we set the hostname, change the root folder, and mount the `/proc`
 
 ## Reference
-https://man7.org/linux/man-pages/man2/clone.2.html
-https://www.youtube.com/watch?v=8fi7uSYlOdc
-https://github.com/nathanagez/c_container/blob/master/container/src/main.c
-https://www.toptal.com/linux/separation-anxiety-isolating-your-system-with-linux-namespaces
-https://ericchiang.github.io/post/containers-from-scratch/
-https://theboreddev.com/understanding-linux-namespaces/
+- https://man7.org/linux/man-pages/man2/clone.2.html
+- https://www.youtube.com/watch?v=8fi7uSYlOdc
+- https://github.com/nathanagez/c_container/blob/master/container/src/main.c
+- https://www.toptal.com/linux/separation-anxiety-isolating-your-system-with-linux-namespaces
+- https://ericchiang.github.io/post/containers-from-scratch/
+- https://theboreddev.com/understanding-linux-namespaces/
